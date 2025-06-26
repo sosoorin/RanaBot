@@ -38,3 +38,4 @@ RanaBot is a simple QQ bot built with Spring Boot 3.0, fully compatible with the
 ## License
 
 [MIT](LICENSE)
+使用本项目时，请确保遵守当地的法律法规。
