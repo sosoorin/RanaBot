@@ -2,16 +2,16 @@
 
 > *おもしれー女~*
 
-RanaBot is a simple QQ bot built with Spring Boot 3.0, fully compatible with the OneBot API.
+RanaBot is a simple QQ bot built with Spring Boot 3.0, fully compatible with OneBot API.
 
 ## Features
 
-- Easy plugin development with annotation-based support
+- **Easy plugin development with annotation-based support**
     - 使用 `@RanaPlugin`注解快速开发插件
-- Plugin management using HTTP Api
-    - 使用 HTTP Api 动态管理插件
-- Support for NapCat(Onebot Api)
-    - 支持 NapCat(Onebot Api)
+- **Plugin management using HTTP API** 
+    - 使用 HTTP API 动态管理插件
+- **Support for NapCat(Onebot API)**
+    - 支持 NapCat(Onebot API)
 
 ## Getting Started
 
@@ -20,6 +20,8 @@ RanaBot is a simple QQ bot built with Spring Boot 3.0, fully compatible with the
 3. run `mvn clean package`
 4. run `RanaBotApplication`
 5. ライブやろ！
+
+> *tips*: default openAPI address is `http://ip:9999/rana-bot/doc.html`
 
 ## Contributing
 
@@ -38,4 +40,5 @@ RanaBot is a simple QQ bot built with Spring Boot 3.0, fully compatible with the
 ## License
 
 [MIT](LICENSE)
-使用本项目时，请确保遵守当地的法律法规。
+
+**使用本项目时，请确保遵守当地的法律法规。**
