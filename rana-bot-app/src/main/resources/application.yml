@@ -1,0 +1,15 @@
+server:
+  port: 9999
+  servlet:
+    context-path: /rana-bot
+  tomcat:
+    uri-encoding: UTF-8
+
+nap-cat:
+  ws:
+    url: ws://localhost:3001
+    token: default_token
+bot:
+  enabled-plugins:
+    - "groupMessagePlugin"
+    - "抹茶芭菲复读机"
