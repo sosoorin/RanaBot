@@ -163,7 +163,7 @@ public class PluginManager {
         log.debug("开始处理事件: {}", eventBody);
 
         // 筛选出能处理此事件的插件
-        List<Plugin> handlers = plugins.values().stream()
+        List<Plugin> handlers = plugins.values().stream().sorted(Plugin::getOrder)
                 .filter(plugin -> {
                     try {
                         return plugin.canHandle(eventBody);
@@ -180,6 +180,10 @@ public class PluginManager {
         List<PluginResult> results = new ArrayList<>();
         for (Plugin plugin : handlers) {
             try {
+                if (!plugin.isEnabled()) {
+                    log.debug("插件 [{}] 未启用，跳过处理", plugin.getName());
+                    continue;
+                }
                 String result = plugin.handleEvent(eventBody);
                 results.add(new PluginResult(plugin.getName(), result, true));
                 log.debug("插件 [{}] 处理事件成功: {}", plugin.getName(), result);

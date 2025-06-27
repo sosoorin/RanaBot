@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 抽象插件类
@@ -24,6 +25,7 @@ public abstract class AbstractPlugin implements Plugin {
     protected final String description;
     protected final String version;
     protected final String author;
+    protected final AtomicBoolean enabled = new AtomicBoolean(false);
 
     /**
      * 构造方法
@@ -40,11 +42,13 @@ public abstract class AbstractPlugin implements Plugin {
 
     @Override
     public void onEnable() {
+        enabled.set(true);
         log.info("插件 [{}] 已启用", name);
     }
 
     @Override
     public void onDisable() {
+        enabled.set(false);
         log.info("插件 [{}] 已禁用", name);
     }
 
@@ -75,5 +79,16 @@ public abstract class AbstractPlugin implements Plugin {
     public boolean setParams(Map<String, Object> params) {
         // 默认实现，子类可以覆盖此方法
         return true;
+    }
+
+    @Override
+    public int getOrder(Plugin plugin) {
+        // 默认实现，子类可以覆盖此方法
+        return 0;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled.get();
     }
 }

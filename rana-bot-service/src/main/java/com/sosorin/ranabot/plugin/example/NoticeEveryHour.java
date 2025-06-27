@@ -27,8 +27,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Lazy
 public class NoticeEveryHour extends AbstractPlugin {
 
-    private static final AtomicBoolean IS_ENABLED = new AtomicBoolean(false);
-
     private static final Set<String> GROUP_ID_SET = new CopyOnWriteArraySet<>();
 
     @Autowired
@@ -64,19 +62,10 @@ public class NoticeEveryHour extends AbstractPlugin {
         return Map.of("groupIdSet", GROUP_ID_SET);
     }
 
-    @Override
-    public void onEnable() {
-        IS_ENABLED.set(true);
-    }
-
-    @Override
-    public void onDisable() {
-        IS_ENABLED.set(false);
-    }
 
     @Scheduled(cron = "0 0 * * * ?")
     public void run() {
-        if (IS_ENABLED.get()) {
+        if (this.isEnabled()) {
             //随机休眠0.5-1.5秒
             long sleepTime = RandomUtil.randomLong(500, 1500);
             try {

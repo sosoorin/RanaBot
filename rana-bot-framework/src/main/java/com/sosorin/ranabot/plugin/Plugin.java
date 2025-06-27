@@ -84,4 +84,17 @@ public interface Plugin {
      */
     boolean setParams(Map<String, Object> params);
 
+    /**
+     * 插件的运行优先级 越小优先级越高 默认为0
+     * @param plugin
+     * @return
+     */
+    int getOrder(Plugin plugin);
+
+    /**
+     * 为了兼容【插件管理】插件加入的字段
+     * todo: 如果有更优雅的方式就好了
+     * @return
+     */
+    boolean isEnabled();
 }
