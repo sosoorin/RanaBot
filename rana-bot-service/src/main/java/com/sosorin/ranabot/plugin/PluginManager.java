@@ -4,6 +4,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.sosorin.ranabot.model.EventBody;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -189,6 +190,15 @@ public class PluginManager {
         }
 
         return results;
+    }
+
+    /**
+     * 异步处理事件
+     * @param eventBody 事件体
+     */
+    @Async("handleEventAsync")
+    public void handleEventAsync(EventBody eventBody) {
+        handleEvent(eventBody);
     }
 
     /**
