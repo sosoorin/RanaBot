@@ -1,6 +1,7 @@
 package com.sosorin.ranabot.plugin.example;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.pinyin.PinyinUtil;
 import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.entity.event.message.BaseMessageEvent;
 import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
@@ -103,7 +104,6 @@ public class SimpleEchoPlugin extends AbstractPlugin {
                     throw new RuntimeException(e);
                 }
                 // 创建回复消息
-                messages.add(0, MessageUtil.createReplyMessage(event.getMessageId().toString()));
                 String bodyStr = "";
                 if (event instanceof PrivateMessageEvent) {
                     bodyStr = SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(), messages);
@@ -116,8 +116,14 @@ public class SimpleEchoPlugin extends AbstractPlugin {
             }
         }
 
-        // 如果不是私聊消息事件，则返回null表示不处理
+        // 如果不是消息事件，则返回null表示不处理
         return null;
+    }
+
+    private boolean pinYinMatch(String text, String keyword) {
+        String textPinYin = PinyinUtil.getPinyin(text, " ");
+        String keywordPinYin = PinyinUtil.getPinyin(keyword, " ");
+        return textPinYin.contains(keywordPinYin);
     }
 
     @Override
