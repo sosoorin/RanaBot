@@ -1,5 +1,6 @@
 package com.sosorin.ranabot.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.sosorin.ranabot.service.IWebSocketService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,10 @@ public class NapCatWebSocketServiceImpl implements IWebSocketService {
     @Override
     public boolean send(String message) {
         log.info("发送消息：{}", message);
+        if (StrUtil.isEmpty( message)) {
+            log.warn("消息为空");
+            return false;
+        }
         //随机延迟0.5 ~ 2s
         long delay = ThreadLocalRandom.current().nextLong(500, 2000);
         try {

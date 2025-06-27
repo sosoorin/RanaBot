@@ -3,6 +3,7 @@ package com.sosorin.ranabot.plugin.example;
 import cn.hutool.core.util.ObjectUtil;
 import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.entity.event.message.BaseMessageEvent;
+import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
 import com.sosorin.ranabot.entity.event.message.PrivateMessageEvent;
 import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
@@ -37,7 +38,7 @@ public class SimpleEchoPlugin extends AbstractPlugin {
     private final Map<String, Object> PARAMS = new ConcurrentHashMap<>();
 
     public SimpleEchoPlugin() {
-        super("一个简单的回声插件，返回接收到的私聊消息", "1.0.0", "rana-bot");
+        super("一个简单的回声插件，返回接收到的消息", "1.0.0", "rana-bot");
     }
 
     @Override
@@ -46,7 +47,7 @@ public class SimpleEchoPlugin extends AbstractPlugin {
         // 这里只是示例，实际开发中可以从文件中读取关键词，并实现动态替换
         List<String> keywords = List.of("抹茶芭菲", "复读", "有趣的女人");
         PARAMS.put("keywords", keywords);
-        log.info("回声插件已启用，将会回复所有收到的包含 [{}] 的私聊消息", keywords);
+        log.info("回声插件已启用，将会回复所有收到的包含 [{}] 的消息", keywords);
     }
 
     @Override
@@ -81,8 +82,8 @@ public class SimpleEchoPlugin extends AbstractPlugin {
 
     @Override
     public String handleEvent(EventBody eventBody) {
-        // 尝试将事件转换为私聊消息事件
-        Optional<PrivateMessageEvent> messageEvent = EventParseUtil.asPrivateMessageEvent(eventBody);
+        // 尝试将事件转换为消息事件
+        Optional<BaseMessageEvent> messageEvent = EventParseUtil.asMessageEvent(eventBody);
 
         // 如果是私聊消息事件，则返回相同的消息内容
         if (messageEvent.isPresent()) {
@@ -103,7 +104,12 @@ public class SimpleEchoPlugin extends AbstractPlugin {
                 }
                 // 创建回复消息
                 messages.add(0, MessageUtil.createReplyMessage(event.getMessageId().toString()));
-                String bodyStr = SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(), messages);
+                String bodyStr = "";
+                if (event instanceof PrivateMessageEvent) {
+                    bodyStr = SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(), messages);
+                } else if (event instanceof GroupMessageEvent) {
+                    bodyStr = SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(), messages);
+                }
                 log.info("发送消息: {}", bodyStr);
                 webSocketService.send(bodyStr);
                 return "Echo: " + messages;
@@ -117,6 +123,6 @@ public class SimpleEchoPlugin extends AbstractPlugin {
     @Override
     public boolean canHandle(EventBody eventBody) {
         // 只处理私聊消息事件
-        return eventBody instanceof PrivateMessageEvent;
+        return eventBody instanceof BaseMessageEvent;
     }
 }
