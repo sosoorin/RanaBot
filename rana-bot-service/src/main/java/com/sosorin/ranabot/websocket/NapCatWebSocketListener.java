@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * NapCat WebSocket 监听器
@@ -54,30 +53,8 @@ public class NapCatWebSocketListener extends WebSocketListener {
         EventBody eventBody = EventParseUtil.parseEvent(text);
         if (eventBody != null) {
             log.info("解析事件: {}", eventBody);
-
             // 使用插件系统处理事件
-            List<PluginManager.PluginResult> results = pluginManager.handleEvent(eventBody);
-
-            // 输出插件处理结果
-            if (!results.isEmpty()) {
-                log.info("插件处理结果: {}", results);
-
-                // 如果有需要，可以根据插件处理结果发送响应
-                // 例如，找到第一个成功处理的结果
-                results.stream()
-                        .filter(PluginManager.PluginResult::isSuccess)
-                        .filter(result -> result.getResult() != null)
-                        .findFirst()
-                        .ifPresent(result -> {
-                            /*
-                            String response = EventParseUtil.createResponseFromEvent(text, result.getResult());
-                            webSocket.send(response);
-                            log.info("已发送响应: {}", response);
-                             */
-                        });
-            } else {
-                log.info("没有插件处理此事件");
-            }
+            pluginManager.handleEventAsync(eventBody);
         } else {
             log.error("事件解析失败");
         }
