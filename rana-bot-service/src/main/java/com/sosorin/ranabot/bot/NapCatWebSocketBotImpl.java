@@ -1,13 +1,11 @@
-package com.sosorin.ranabot.service.impl;
+package com.sosorin.ranabot.bot;
 
 import cn.hutool.core.util.StrUtil;
-import com.sosorin.ranabot.service.IWebSocketService;
+import com.sosorin.bot.IBot;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.WebSocket;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author rana-bot
@@ -15,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 @Service
 @Slf4j
-public class NapCatWebSocketServiceImpl implements IWebSocketService {
+public class NapCatWebSocketBotImpl implements IBot {
 
     @Resource(name = "napCatWebSocketClient")
     private WebSocket napCatWebSocketClient;
@@ -28,10 +26,11 @@ public class NapCatWebSocketServiceImpl implements IWebSocketService {
     @Override
     public boolean send(String message) {
         log.info("发送消息：{}", message);
-        if (StrUtil.isEmpty( message)) {
+        if (StrUtil.isEmpty(message)) {
             log.warn("消息为空");
             return false;
         }
+        /*
         //随机延迟0.5 ~ 2s
         long delay = ThreadLocalRandom.current().nextLong(500, 2000);
         try {
@@ -39,6 +38,7 @@ public class NapCatWebSocketServiceImpl implements IWebSocketService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+         */
         return napCatWebSocketClient.send(message);
     }
 

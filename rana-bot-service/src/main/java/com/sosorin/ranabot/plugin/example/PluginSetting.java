@@ -4,6 +4,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
 import com.alibaba.fastjson2.JSON;
+import com.sosorin.bot.IBot;
 import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.entity.event.message.BaseMessageEvent;
 import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
@@ -13,7 +14,6 @@ import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
 import com.sosorin.ranabot.plugin.Plugin;
 import com.sosorin.ranabot.plugin.PluginManager;
-import com.sosorin.ranabot.service.IWebSocketService;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
@@ -37,8 +37,6 @@ public class PluginSetting extends AbstractPlugin {
 
     @Autowired
     private PluginManager pluginManager;
-    @Autowired
-    private IWebSocketService webSocketService;
 
     private static final AtomicLong SUPER_USER_ID = new AtomicLong(0);
 
@@ -89,7 +87,7 @@ public class PluginSetting extends AbstractPlugin {
      * @return 处理结果，如果不需要处理则返回null
      */
     @Override
-    public PluginResult handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(IBot bot, EventBody eventBody) {
         Optional<BaseMessageEvent> messageEvent = EventParseUtil.asMessageEvent(eventBody);
         if (messageEvent.isPresent()) {
             BaseMessageEvent event = messageEvent.get();
@@ -112,7 +110,7 @@ public class PluginSetting extends AbstractPlugin {
                     ;
                 }
                 if (StrUtil.isNotEmpty(resText)) {
-                    sendRes(event, resText);
+                    sendRes(bot, event, resText);
                     return PluginResult.RETURN(resText);
                 }
             }
@@ -139,17 +137,17 @@ public class PluginSetting extends AbstractPlugin {
         return sb.toString();
     }
 
-    private void sendRes(BaseMessageEvent event, String resText) {
+    private void sendRes(IBot bot, BaseMessageEvent event, String resText) {
         Message replyMessage = MessageUtil.createReplyMessage(event.getMessageId().toString());
         Message textMessage = MessageUtil.createTextMessage(resText);
         List<Message> resMessages = List.of(replyMessage, textMessage);
         switch (event.getMessageType()) {
             case "private":
-                webSocketService.send(SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(),
+                bot.send(SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(),
                         resMessages));
                 break;
             case "group":
-                webSocketService.send(SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(),
+                bot.send(SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(),
                         resMessages));
                 break;
         }

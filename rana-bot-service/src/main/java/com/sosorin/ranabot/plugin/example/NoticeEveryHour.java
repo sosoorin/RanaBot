@@ -5,7 +5,7 @@ import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.ranabot.service.IWebSocketService;
+import com.sosorin.bot.IBot;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class NoticeEveryHour extends AbstractPlugin {
     private static final Set<String> GROUP_ID_SET = new CopyOnWriteArraySet<>();
 
     @Autowired
-    private IWebSocketService webSocketService;
+    private IBot bot;
 
     public NoticeEveryHour() {
         super("整点报时", "1.0.0", "rana-bot");
@@ -81,7 +81,7 @@ public class NoticeEveryHour extends AbstractPlugin {
             GROUP_ID_SET.forEach(groupId -> {
                 String eventStr = SendEntityUtil.buildSendGroupMessageStr(groupId,
                         List.of(MessageUtil.createTextMessage(text)));
-                webSocketService.send(eventStr);
+                bot.send(eventStr);
             });
         }
     }
@@ -93,7 +93,7 @@ public class NoticeEveryHour extends AbstractPlugin {
      * @return 处理结果，如果不需要处理则返回null
      */
     @Override
-    public PluginResult handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(IBot bot, EventBody eventBody) {
         return PluginResult.SUCCESS();
     }
 
