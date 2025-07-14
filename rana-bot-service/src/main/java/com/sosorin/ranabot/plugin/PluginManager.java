@@ -3,9 +3,12 @@ package com.sosorin.ranabot.plugin;
 import cn.hutool.extra.spring.SpringUtil;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
+import com.sosorin.bot.IBot;
 import com.sun.nio.sctp.HandlerResult;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class PluginManager {
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     /**
      * 插件列表，使用ConcurrentHashMap保证线程安全
      */
@@ -33,6 +39,15 @@ public class PluginManager {
     @PostConstruct
     public void init() {
         log.info("插件管理器初始化完成");
+    }
+
+    /**
+     * 获取WebSocket机器人实例
+     * 
+     * @return IWebSocketBot实例
+     */
+    private IBot getWebSocketBot() {
+        return applicationContext.getBean(IBot.class);
     }
 
     /**
@@ -176,6 +191,9 @@ public class PluginManager {
 
         log.debug("找到 {} 个插件可以处理此事件", handlers.size());
 
+        // 获取WebSocketBot实例
+        IBot bot = getWebSocketBot();
+
         // 调用每个插件的处理方法
         List<PluginResult> results = new ArrayList<>();
         for (Plugin plugin : handlers) {
@@ -184,7 +202,7 @@ public class PluginManager {
                     log.debug("插件 [{}] 未启用，跳过处理", plugin.getName());
                     continue;
                 }
-                PluginResult pluginResult = plugin.handleEvent(eventBody);
+                PluginResult pluginResult = plugin.handleEvent(bot, eventBody);
                 results.add(pluginResult);
                 if (pluginResult.isSuccess()) {
                     log.debug("插件 [{}] 处理事件成功, message: {}", plugin.getName(), pluginResult.getMessage());

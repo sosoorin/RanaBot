@@ -1,5 +1,6 @@
 package com.sosorin.ranabot.plugin;
 
+import com.sosorin.bot.IBot;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 
@@ -60,7 +61,7 @@ public interface Plugin {
      * @param eventBody 事件体
      * @return 处理结果，如果不需要处理则返回null
      */
-    PluginResult handleEvent(EventBody eventBody);
+    PluginResult handleEvent(IBot bot, EventBody eventBody);
 
     /**
      * 检查插件是否支持处理此类事件

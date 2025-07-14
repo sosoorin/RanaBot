@@ -9,12 +9,11 @@ import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.ranabot.service.IWebSocketService;
+import com.sosorin.bot.IBot;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +31,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @RanaPlugin("抹茶芭菲复读机")
 public class SimpleEchoPlugin extends AbstractPlugin {
-
-    @Autowired
-    private IWebSocketService webSocketService;
 
     private final Map<String, Object> PARAMS = new ConcurrentHashMap<>();
 
@@ -82,7 +78,7 @@ public class SimpleEchoPlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginResult handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(IBot bot, EventBody eventBody) {
         // 尝试将事件转换为消息事件
         Optional<BaseMessageEvent> messageEvent = EventParseUtil.asMessageEvent(eventBody);
 
@@ -111,7 +107,7 @@ public class SimpleEchoPlugin extends AbstractPlugin {
                     bodyStr = SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(), messages);
                 }
                 log.info("发送消息: {}", bodyStr);
-                webSocketService.send(bodyStr);
+                bot.send(bodyStr);
                 return PluginResult.RETURN("Echo: " + messages);
             }
         }

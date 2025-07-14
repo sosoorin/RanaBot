@@ -7,12 +7,11 @@ import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.ranabot.service.IWebSocketService;
+import com.sosorin.bot.IBot;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,8 +28,6 @@ import java.util.Optional;
 @Slf4j
 @RanaPlugin(value = "groupMessagePlugin")
 public class GroupMessagePlugin extends AbstractPlugin {
-    @Autowired
-    private IWebSocketService webSocketService;
 
     public GroupMessagePlugin() {
         super("一个处理群聊消息的插件", "1.0.0", "rana-bot");
@@ -43,7 +40,7 @@ public class GroupMessagePlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginResult handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(IBot bot, EventBody eventBody) {
         // 尝试将事件转换为群聊消息事件
         Optional<GroupMessageEvent> groupEvent = EventParseUtil.asGroupMessageEvent(eventBody);
 
@@ -77,7 +74,7 @@ public class GroupMessagePlugin extends AbstractPlugin {
                 String eventStr = SendEntityUtil.buildSendGroupMessageStr(groupId.toString(),
                         List.of(replyMsg,
                                 MessageUtil.createTextMessage(text)));
-                webSocketService.send(eventStr);
+                bot.send(eventStr);
             }
             return PluginResult.RETURN(text);
         }

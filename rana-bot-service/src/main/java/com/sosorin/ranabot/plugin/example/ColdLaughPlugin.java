@@ -10,12 +10,11 @@ import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.ranabot.service.IWebSocketService;
+import com.sosorin.bot.IBot;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,8 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @RanaPlugin("谐音梗生成器")
 @Slf4j
 public class ColdLaughPlugin extends AbstractPlugin {
-    @Autowired
-    private IWebSocketService webSocketService;
 
     private final Map<String, Object> PARAMS = new ConcurrentHashMap<>();
 
@@ -76,7 +73,7 @@ public class ColdLaughPlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginResult handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(IBot bot, EventBody eventBody) {
         // 尝试将事件转换为消息事件
         Optional<BaseMessageEvent> messageEvent = EventParseUtil.asMessageEvent(eventBody);
 
@@ -132,7 +129,7 @@ public class ColdLaughPlugin extends AbstractPlugin {
                     bodyStr = SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(), replyMessages);
                 }
                 log.info("发送消息: {}", bodyStr);
-                webSocketService.send(bodyStr);
+                bot.send(bodyStr);
                 return PluginResult.RETURN();
             }
         }
