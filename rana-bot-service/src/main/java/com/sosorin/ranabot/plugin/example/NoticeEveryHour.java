@@ -36,7 +36,7 @@ public class NoticeEveryHour extends AbstractPlugin {
         super("整点报时", "1.0.0", "rana-bot");
     }
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒");
 
     /**
      * 设置插件参数
@@ -76,7 +76,7 @@ public class NoticeEveryHour extends AbstractPlugin {
                 throw new RuntimeException(e);
             }
             LocalDateTime now = LocalDateTime.now();
-            String text = "现在时间是：" + now.format(dateTimeFormatter);
+            String text = "现在时间是：" + now.format(DATE_TIME_FORMATTER);
             MessageUtil.createTextMessage(text);
             GROUP_ID_SET.forEach(groupId -> {
                 String eventStr = SendEntityUtil.buildSendGroupMessageStr(groupId,
