@@ -1,6 +1,7 @@
 package com.sosorin.ranabot.plugin;
 
 import com.sosorin.ranabot.model.EventBody;
+import com.sosorin.ranabot.model.PluginResult;
 
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public interface Plugin {
      * @param eventBody 事件体
      * @return 处理结果，如果不需要处理则返回null
      */
-    String handleEvent(EventBody eventBody);
+    PluginResult handleEvent(EventBody eventBody);
 
     /**
      * 检查插件是否支持处理此类事件

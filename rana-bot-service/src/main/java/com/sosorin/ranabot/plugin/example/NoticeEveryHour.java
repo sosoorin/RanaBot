@@ -3,6 +3,7 @@ package com.sosorin.ranabot.plugin.example;
 import cn.hutool.core.util.RandomUtil;
 import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.model.EventBody;
+import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
 import com.sosorin.ranabot.service.IWebSocketService;
 import com.sosorin.ranabot.util.MessageUtil;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author rana-bot
@@ -35,6 +35,8 @@ public class NoticeEveryHour extends AbstractPlugin {
     public NoticeEveryHour() {
         super("整点报时", "1.0.0", "rana-bot");
     }
+
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒");
 
     /**
      * 设置插件参数
@@ -74,7 +76,7 @@ public class NoticeEveryHour extends AbstractPlugin {
                 throw new RuntimeException(e);
             }
             LocalDateTime now = LocalDateTime.now();
-            String text = "现在时间是：" + now.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"));
+            String text = "现在时间是：" + now.format(dateTimeFormatter);
             MessageUtil.createTextMessage(text);
             GROUP_ID_SET.forEach(groupId -> {
                 String eventStr = SendEntityUtil.buildSendGroupMessageStr(groupId,
@@ -91,8 +93,8 @@ public class NoticeEveryHour extends AbstractPlugin {
      * @return 处理结果，如果不需要处理则返回null
      */
     @Override
-    public String handleEvent(EventBody eventBody) {
-        return "";
+    public PluginResult handleEvent(EventBody eventBody) {
+        return PluginResult.SUCCESS();
     }
 
     @Override

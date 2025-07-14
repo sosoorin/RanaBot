@@ -2,6 +2,8 @@ package com.sosorin.ranabot.plugin;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.sosorin.ranabot.model.EventBody;
+import com.sosorin.ranabot.model.PluginResult;
+import com.sun.nio.sctp.HandlerResult;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -11,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * 插件管理器
@@ -163,7 +164,7 @@ public class PluginManager {
         log.debug("开始处理事件: {}", eventBody);
 
         // 筛选出能处理此事件的插件
-        List<Plugin> handlers = plugins.values().stream().sorted(Plugin::getOrder)
+        List<Plugin> handlers = plugins.values().stream()
                 .filter(plugin -> {
                     try {
                         return plugin.canHandle(eventBody);
@@ -171,8 +172,7 @@ public class PluginManager {
                         log.error("插件 [{}] 判断是否能处理事件时发生异常: {}", plugin.getName(), e.getMessage());
                         return false;
                     }
-                })
-                .collect(Collectors.toList());
+                }).sorted(Plugin::getOrder).toList();
 
         log.debug("找到 {} 个插件可以处理此事件", handlers.size());
 
@@ -184,11 +184,18 @@ public class PluginManager {
                     log.debug("插件 [{}] 未启用，跳过处理", plugin.getName());
                     continue;
                 }
-                String result = plugin.handleEvent(eventBody);
-                results.add(new PluginResult(plugin.getName(), result, true));
-                log.debug("插件 [{}] 处理事件成功: {}", plugin.getName(), result);
+                PluginResult pluginResult = plugin.handleEvent(eventBody);
+                results.add(pluginResult);
+                if (pluginResult.isSuccess()) {
+                    log.debug("插件 [{}] 处理事件成功, message: {}", plugin.getName(), pluginResult.getMessage());
+                } else {
+                    log.error("插件 [{}] 处理事件失败: {}", plugin.getName(), pluginResult.getMessage());
+                }
+                if (pluginResult.getHandlerResult().equals(HandlerResult.RETURN)) {
+                    log.debug("插件 [{}] 处理事件返回了RETURN，跳过后续插件", plugin.getName());
+                    return results;
+                }
             } catch (Exception e) {
-                results.add(new PluginResult(plugin.getName(), e.getMessage(), false));
                 log.error("插件 [{}] 处理事件时发生异常: {}", plugin.getName(), e.getMessage());
             }
         }
@@ -198,6 +205,7 @@ public class PluginManager {
 
     /**
      * 异步处理事件
+     *
      * @param eventBody 事件体
      */
     @Async("handleEventAsync")
@@ -205,50 +213,4 @@ public class PluginManager {
         handleEvent(eventBody);
     }
 
-    /**
-     * 插件处理结果
-     */
-    public static class PluginResult {
-        /**
-         * 插件名称
-         */
-        private final String pluginName;
-
-        /**
-         * 处理结果
-         */
-        private final String result;
-
-        /**
-         * 是否处理成功
-         */
-        private final boolean success;
-
-        public PluginResult(String pluginName, String result, boolean success) {
-            this.pluginName = pluginName;
-            this.result = result;
-            this.success = success;
-        }
-
-        public String getPluginName() {
-            return pluginName;
-        }
-
-        public String getResult() {
-            return result;
-        }
-
-        public boolean isSuccess() {
-            return success;
-        }
-
-        @Override
-        public String toString() {
-            return "PluginResult{" +
-                    "pluginName='" + pluginName + '\'' +
-                    ", result='" + result + '\'' +
-                    ", success=" + success +
-                    '}';
-        }
-    }
 } 

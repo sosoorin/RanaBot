@@ -1,13 +1,13 @@
 package com.sosorin.ranabot.plugin.example;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.extra.pinyin.PinyinUtil;
 import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.entity.event.message.BaseMessageEvent;
 import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
 import com.sosorin.ranabot.entity.event.message.PrivateMessageEvent;
 import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
+import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
 import com.sosorin.ranabot.service.IWebSocketService;
 import com.sosorin.ranabot.util.EventParseUtil;
@@ -82,7 +82,7 @@ public class SimpleEchoPlugin extends AbstractPlugin {
     }
 
     @Override
-    public String handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(EventBody eventBody) {
         // 尝试将事件转换为消息事件
         Optional<BaseMessageEvent> messageEvent = EventParseUtil.asMessageEvent(eventBody);
 
@@ -112,18 +112,12 @@ public class SimpleEchoPlugin extends AbstractPlugin {
                 }
                 log.info("发送消息: {}", bodyStr);
                 webSocketService.send(bodyStr);
-                return "Echo: " + messages;
+                return PluginResult.RETURN("Echo: " + messages);
             }
         }
 
         // 如果不是消息事件，则返回null表示不处理
-        return null;
-    }
-
-    private boolean pinYinMatch(String text, String keyword) {
-        String textPinYin = PinyinUtil.getPinyin(text, " ");
-        String keywordPinYin = PinyinUtil.getPinyin(keyword, " ");
-        return textPinYin.contains(keywordPinYin);
+        return PluginResult.CONTINUE();
     }
 
     @Override
