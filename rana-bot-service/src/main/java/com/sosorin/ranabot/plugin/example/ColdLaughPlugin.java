@@ -8,6 +8,7 @@ import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
 import com.sosorin.ranabot.entity.event.message.PrivateMessageEvent;
 import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
+import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
 import com.sosorin.ranabot.service.IWebSocketService;
 import com.sosorin.ranabot.util.EventParseUtil;
@@ -75,7 +76,7 @@ public class ColdLaughPlugin extends AbstractPlugin {
     }
 
     @Override
-    public String handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(EventBody eventBody) {
         // 尝试将事件转换为消息事件
         Optional<BaseMessageEvent> messageEvent = EventParseUtil.asMessageEvent(eventBody);
 
@@ -106,7 +107,10 @@ public class ColdLaughPlugin extends AbstractPlugin {
             keywordsMap.forEach((k, v) -> {
                 if (recFirstLetter.contains(k)) {
                     v.forEach(keyword -> {
-                        coldMsg.add(MessageUtil.createTextMessage(keyword));
+                        // 如果和原消息相同，则不回复
+                        if (!keyword.equals(recText)) {
+                            coldMsg.add(MessageUtil.createTextMessage(keyword));
+                        }
                     });
                 }
             });
@@ -129,11 +133,12 @@ public class ColdLaughPlugin extends AbstractPlugin {
                 }
                 log.info("发送消息: {}", bodyStr);
                 webSocketService.send(bodyStr);
+                return PluginResult.RETURN();
             }
         }
 
         // 如果不是消息事件，则返回null表示不处理
-        return null;
+        return PluginResult.CONTINUE();
     }
 
 

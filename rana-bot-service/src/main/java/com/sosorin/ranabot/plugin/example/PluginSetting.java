@@ -2,12 +2,14 @@ package com.sosorin.ranabot.plugin.example;
 
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.system.SystemUtil;
 import com.alibaba.fastjson2.JSON;
 import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.entity.event.message.BaseMessageEvent;
 import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
 import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
+import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
 import com.sosorin.ranabot.plugin.Plugin;
 import com.sosorin.ranabot.plugin.PluginManager;
@@ -87,7 +89,7 @@ public class PluginSetting extends AbstractPlugin {
      * @return 处理结果，如果不需要处理则返回null
      */
     @Override
-    public String handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(EventBody eventBody) {
         Optional<BaseMessageEvent> messageEvent = EventParseUtil.asMessageEvent(eventBody);
         if (messageEvent.isPresent()) {
             BaseMessageEvent event = messageEvent.get();
@@ -102,29 +104,39 @@ public class PluginSetting extends AbstractPlugin {
                     resText = disablePluginByName(text);
                 }
                 if (text.startsWith("/插件列表")) {
-                    StringBuffer sb = new StringBuffer();
-                    pluginManager.getAllPlugins().stream().sorted(Plugin::getOrder).forEach(plugin -> {
-                        sb.append("插件名称: ").append(plugin.getName()).append("\n")
-                                .append("插件描述: ").append(plugin.getDescription()).append("\n")
-                                .append("插件版本: ").append(plugin.getVersion()).append("\n")
-                                .append("插件作者: ").append(plugin.getAuthor()).append("\n")
-                                .append("插件参数: ").append(JSON.toJSON(plugin.getParams())).append("\n")
-                                .append("插件状态: ").append(plugin.isEnabled() ? "启用" : "禁用").append("\n")
-                                .append("插件顺序: ").append(plugin.getOrder(plugin)).append("\n")
-                                .append("---------------------------------------------------\n");
-                    });
-                    resText = sb.toString();
+                    resText = buildPluginList();
+                }
+                if (text.startsWith("/系统信息")) {
+                    resText = SystemUtil.getOsInfo().toString() + "\n"
+                            + SystemUtil.getRuntimeInfo().toString() + "\n"
+                    ;
                 }
                 if (StrUtil.isNotEmpty(resText)) {
                     sendRes(event, resText);
+                    return PluginResult.RETURN(resText);
                 }
-                return resText;
             }
             // 示例：处理消息事件
-            return "已处理消息：" + event.getMessage();
+            return PluginResult.CONTINUE("已处理消息：" + event.getMessage());
         }
 
-        return null;
+        return PluginResult.CONTINUE();
+    }
+
+    @NotNull
+    private String buildPluginList() {
+        StringBuffer sb = new StringBuffer();
+        pluginManager.getAllPlugins().stream().sorted(Plugin::getOrder).forEach(plugin -> {
+            sb.append("插件名称: ").append(plugin.getName()).append("\n")
+                    .append("插件描述: ").append(plugin.getDescription()).append("\n")
+                    .append("插件版本: ").append(plugin.getVersion()).append("\n")
+                    .append("插件作者: ").append(plugin.getAuthor()).append("\n")
+                    .append("插件参数: ").append(JSON.toJSON(plugin.getParams())).append("\n")
+                    .append("插件状态: ").append(plugin.isEnabled() ? "启用" : "禁用").append("\n")
+                    .append("插件顺序: ").append(plugin.getOrder(plugin)).append("\n")
+                    .append("---------------------------------------------------\n");
+        });
+        return sb.toString();
     }
 
     private void sendRes(BaseMessageEvent event, String resText) {
@@ -182,6 +194,6 @@ public class PluginSetting extends AbstractPlugin {
     @Override
     public int getOrder(Plugin plugin) {
         // 保证插件优先级最高
-        return -1;
+        return Integer.MIN_VALUE;
     }
 }

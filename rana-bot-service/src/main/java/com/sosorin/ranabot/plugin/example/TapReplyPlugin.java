@@ -5,6 +5,7 @@ import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.entity.event.NoticeEventBody;
 import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
+import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
 import com.sosorin.ranabot.service.IWebSocketService;
 import com.sosorin.ranabot.util.EventParseUtil;
@@ -35,7 +36,7 @@ public class TapReplyPlugin extends AbstractPlugin {
      * @return 处理结果，如果不需要处理则返回null
      */
     @Override
-    public String handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(EventBody eventBody) {
         Optional<NoticeEventBody> noticeEvent = EventParseUtil.asNoticeEvent(eventBody);
         if (noticeEvent.isPresent()) {
             NoticeEventBody event = noticeEvent.get();
@@ -50,10 +51,10 @@ public class TapReplyPlugin extends AbstractPlugin {
                 List<Message> messages = List.of(atMessage, textMessage);
                 String msgStr = SendEntityUtil.buildSendGroupMessageStr(groupId.toString(), messages);
                 webSocketService.send(msgStr);
-                return "请我吃抹茶芭菲！";
+                return PluginResult.RETURN("请我吃抹茶芭菲！");
             }
         }
-        return null;
+        return PluginResult.CONTINUE();
     }
 
     @Override

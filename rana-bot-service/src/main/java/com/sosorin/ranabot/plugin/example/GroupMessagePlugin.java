@@ -5,6 +5,7 @@ import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
 import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
+import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
 import com.sosorin.ranabot.service.IWebSocketService;
 import com.sosorin.ranabot.util.EventParseUtil;
@@ -42,7 +43,7 @@ public class GroupMessagePlugin extends AbstractPlugin {
     }
 
     @Override
-    public String handleEvent(EventBody eventBody) {
+    public PluginResult handleEvent(EventBody eventBody) {
         // 尝试将事件转换为群聊消息事件
         Optional<GroupMessageEvent> groupEvent = EventParseUtil.asGroupMessageEvent(eventBody);
 
@@ -59,7 +60,7 @@ public class GroupMessagePlugin extends AbstractPlugin {
             String text = "";
             // 根据关键词回复
             if (MessageUtil.containsKeyword(messages, "你好") || MessageUtil.containsKeyword(messages, "hello")) {
-                text = "哔~卟~我是个机器人，很高兴为您服务！";
+                text = "我是个机器人喵，很高兴为您服务喵！";
 
             } else if (MessageUtil.containsKeyword(messages, "时间") || MessageUtil.containsKeyword(messages, "几点")) {
                 LocalDateTime now = LocalDateTime.now();
@@ -78,11 +79,11 @@ public class GroupMessagePlugin extends AbstractPlugin {
                                 MessageUtil.createTextMessage(text)));
                 webSocketService.send(eventStr);
             }
-            return text;
+            return PluginResult.RETURN(text);
         }
 
         // 如果不满足任何条件，则返回null表示不处理
-        return null;
+        return PluginResult.CONTINUE();
     }
 
     @Override
