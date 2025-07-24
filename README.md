@@ -13,6 +13,10 @@ RanaBot is a simple QQ bot built with Spring Boot 3.0, fully compatible with One
 - **Support for NapCat(Onebot API)**
     - 支持 NapCat(Onebot API)
 
+## Discussion
+
+[QQ群](https://qm.qq.com/q/hcEjybPC94)
+
 ## Getting Started
 
 1. Clone the repository
@@ -31,6 +35,23 @@ RanaBot is a simple QQ bot built with Spring Boot 3.0, fully compatible with One
 4. Push to the branch
 5. Create new Pull Request
 6. 一生、バンドしてくれる？
+
+## Plugin Development
+
+1. run `mvn clean install -pl rana-bot-plugin -am` on rana-bot project root
+2. create a new project with `pom.xml` & depend on `rana-bot-plugin`
+```
+<dependencies>
+        <dependency>
+            <groupId>com.sosorin</groupId>
+            <artifactId>rana-bot-plugin</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+```
+4. create a new class with `@RanaPlugin` annotation & extends `AbstractPlugin`
+5. package your plugin using maven
+6. move your plugin jar to main project's `plugins` directory (or you can set the path `bot.plugin-dir` in `application.yml`)
 
 ## Thanks
 
