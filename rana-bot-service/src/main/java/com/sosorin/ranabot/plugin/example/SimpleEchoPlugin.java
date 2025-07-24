@@ -2,17 +2,17 @@ package com.sosorin.ranabot.plugin.example;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.sosorin.ranabot.annotation.RanaPlugin;
+import com.sosorin.ranabot.entity.bot.IBot;
 import com.sosorin.ranabot.entity.event.message.BaseMessageEvent;
 import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
 import com.sosorin.ranabot.entity.event.message.PrivateMessageEvent;
 import com.sosorin.ranabot.entity.message.Message;
+import com.sosorin.ranabot.exception.WebSocketRequestException;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.ranabot.entity.bot.IBot;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
-import com.sosorin.ranabot.util.SendEntityUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -99,13 +99,21 @@ public class SimpleEchoPlugin extends AbstractPlugin {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                // 创建回复消息
-                if (event instanceof PrivateMessageEvent) {
-                    bot.sendPrivateMessage(event.getUserId().toString(), messages);
-                } else if (event instanceof GroupMessageEvent) {
-                    bot.sendGroupMessage(((GroupMessageEvent) event).getGroupId().toString(), messages);
+                
+                try {
+                    // 创建回复消息
+                    Long messageId = null;
+                    if (event instanceof PrivateMessageEvent) {
+                        messageId = bot.sendPrivateMessage(event.getUserId().toString(), messages);
+                    } else if (event instanceof GroupMessageEvent) {
+                        messageId = bot.sendGroupMessage(((GroupMessageEvent) event).getGroupId().toString(), messages);
+                    }
+                    log.info("发送消息成功，消息ID: {}", messageId);
+                    return PluginResult.RETURN("Echo: " + messages);
+                } catch (WebSocketRequestException e) {
+                    log.error("发送消息失败: {}", e.getMessage());
+                    return PluginResult.FAIL("发送消息失败: " + e.getMessage());
                 }
-                return PluginResult.RETURN("Echo: " + messages);
             }
         }
 

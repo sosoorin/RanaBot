@@ -35,7 +35,7 @@ public class PluginResult {
      * @return 结果对象
      */
     public static PluginResult SUCCESS(String message) {
-        return CONTINUE(message);
+        return RETURN(message);
     }
 
     /**

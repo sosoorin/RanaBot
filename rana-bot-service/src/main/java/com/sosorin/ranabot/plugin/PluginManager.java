@@ -217,7 +217,6 @@ public class PluginManager {
                 log.error("插件 [{}] 处理事件时发生异常: {}", plugin.getName(), e.getMessage());
             }
         }
-
         return results;
     }
 

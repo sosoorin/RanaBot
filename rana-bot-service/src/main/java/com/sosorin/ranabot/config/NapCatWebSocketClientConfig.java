@@ -1,6 +1,7 @@
 package com.sosorin.ranabot.config;
 
-import com.sosorin.ranabot.websocket.NapCatWebSocketListener;
+import com.sosorin.ranabot.websocket.listener.NapCatWebSocketApiListener;
+import com.sosorin.ranabot.websocket.listener.NapCatWebSocketEventListener;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -31,12 +32,23 @@ public class NapCatWebSocketClientConfig {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Bean("napCatWebSocketClient")
-    public WebSocket napCatWebSocketClient() {
-        Request request = new Request.Builder().url(url).addHeader("Authorization", token).build();
+    @Bean("napCatWebSocketEventClient")
+    public WebSocket napCatWebSocketEventClient() {
+        Request request = new Request.Builder().url(url + "/event").addHeader("Authorization", token).build();
         // 从ApplicationContext中获取NapCatWebSocketListener实例
-        NapCatWebSocketListener listener = applicationContext.getBean(NapCatWebSocketListener.class);
+        NapCatWebSocketEventListener listener = applicationContext.getBean(NapCatWebSocketEventListener.class);
         WebSocket webSocket = client.newWebSocket(request, listener);
         return webSocket;
     }
+
+    @Bean("napCatWebSocketApiClient")
+    public WebSocket napCatWebSocketClient() {
+        Request request = new Request.Builder().url(url + "/api").addHeader("Authorization", token).build();
+        // 从ApplicationContext中获取NapCatWebSocketListener实例
+        NapCatWebSocketApiListener listener = applicationContext.getBean(NapCatWebSocketApiListener.class);
+        WebSocket webSocket = client.newWebSocket(request, listener);
+        return webSocket;
+    }
+
+
 }

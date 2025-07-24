@@ -2,15 +2,15 @@ package com.sosorin.ranabot.plugin.example;
 
 import cn.hutool.core.util.StrUtil;
 import com.sosorin.ranabot.annotation.RanaPlugin;
+import com.sosorin.ranabot.entity.bot.IBot;
 import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
 import com.sosorin.ranabot.entity.message.Message;
+import com.sosorin.ranabot.entity.message.MessageFactory;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.ranabot.entity.bot.IBot;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
-import com.sosorin.ranabot.util.SendEntityUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 示例插件：群聊消息处理插件
- * 当接收到群聊消息事件时，根据关键词进行回复
- *
+ * 群消息处理插件
+ * 处理来自QQ群的消息
+ * 
  * @author rana-bot
  * @since 2025/6/28
  */
@@ -30,30 +30,28 @@ import java.util.Optional;
 public class GroupMessagePlugin extends AbstractPlugin {
 
     public GroupMessagePlugin() {
-        super("一个处理群聊消息的插件", "1.0.0", "rana-bot");
+        super("群消息处理插件", "1.0.0", "rana-bot");
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        log.info("插件 [{}] 已启用，将会处理群聊中的关键词", name);
-    }
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒");
 
     @Override
     public PluginResult handleEvent(IBot bot, EventBody eventBody) {
-        // 尝试将事件转换为群聊消息事件
+        // 尝试将事件转换为群消息事件
         Optional<GroupMessageEvent> groupEvent = EventParseUtil.asGroupMessageEvent(eventBody);
-
+        
         if (groupEvent.isPresent()) {
             GroupMessageEvent event = groupEvent.get();
-            List<Message> messages = event.getMessage();
-            MessageUtil.containsKeyword(messages, "关键词");
+            
+            // 获取群聊ID和发送者ID
             Long groupId = event.getGroupId();
             Long userId = event.getUserId();
-            Long messageId = event.getMessageId();
-            Message replyMsg = MessageUtil.createReplyMessage(messageId.toString());
+            
+            // 获取消息内容
+            List<Message> messages = event.getMessage();
 
             log.info("收到群 {} 中用户 {} 的消息: {}", groupId, userId, messages);
+
             String text = "";
             // 根据关键词回复
             if (MessageUtil.containsKeyword(messages, "你好") || MessageUtil.containsKeyword(messages, "hello")) {
@@ -62,7 +60,7 @@ public class GroupMessagePlugin extends AbstractPlugin {
             } else if (MessageUtil.containsKeyword(messages, "时间") || MessageUtil.containsKeyword(messages, "几点")) {
                 LocalDateTime now = LocalDateTime.now();
                 // 转化为 xxxx年xx月xx日 xx时xx分xx秒
-                String time = now.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"));
+                String time = now.format(DATE_TIME_FORMATTER);
                 text = "现在的时间是: " + time;
             } else if (MessageUtil.containsKeyword(messages, "help")) {
                 text = "我可以回答以下问题：\n" +
@@ -71,18 +69,17 @@ public class GroupMessagePlugin extends AbstractPlugin {
                         "3. 帮助（帮助/help）";
             }
             if (StrUtil.isNotBlank(text)) {
-                bot.sendGroupMessage(groupId.toString(), replyMsg, MessageUtil.createTextMessage(text));
+                Message replyMessage = MessageFactory.createReplyMessage(event.getMessageId().toString());
+                Long messageId = bot.sendGroupMessage(groupId.toString(), replyMessage, MessageUtil.createTextMessage(text));
+                return PluginResult.SUCCESS(String.format("已回复群消息，消息ID: %s", messageId));
             }
-            return PluginResult.RETURN(text);
         }
-
-        // 如果不满足任何条件，则返回continue
+        
         return PluginResult.CONTINUE();
     }
 
     @Override
     public boolean canHandle(EventBody eventBody) {
-        // 只处理群聊消息事件
         return eventBody instanceof GroupMessageEvent;
     }
 } 

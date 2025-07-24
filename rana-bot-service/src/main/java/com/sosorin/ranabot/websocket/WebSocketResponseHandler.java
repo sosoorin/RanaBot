@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * WebSocket响应处理器
@@ -25,6 +28,11 @@ public class WebSocketResponseHandler {
      * 请求回调映射，以echo字段为键，存储等待响应的Future
      */
     private final Map<String, CompletableFuture<ActionResponse<?>>> pendingRequests = new ConcurrentHashMap<>();
+    
+    /**
+     * 默认超时时间（毫秒）
+     */
+    private static final long DEFAULT_TIMEOUT_MS = 5000;
 
     /**
      * 注册一个请求，返回一个用于接收响应的Future
@@ -38,6 +46,43 @@ public class WebSocketResponseHandler {
         CompletableFuture<ActionResponse<T>> future = new CompletableFuture<>();
         pendingRequests.put(echo, (CompletableFuture) future);
         return future;
+    }
+
+    /**
+     * 同步等待响应
+     *
+     * @param echo 请求的echo字段
+     * @param timeout 超时时间（毫秒）
+     * @param <T> 响应数据类型
+     * @return 响应对象
+     */
+    public <T> ActionResponse<T> waitForResponse(String echo, long timeout) {
+        CompletableFuture<ActionResponse<T>> future = registerRequest(echo);
+        try {
+            return future.get(timeout, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("等待响应被中断: {}", echo);
+            return ActionResponse.failed(500, "等待响应被中断", echo);
+        } catch (ExecutionException e) {
+            log.error("等待响应时发生错误: {}", e.getMessage());
+            return ActionResponse.failed(500, "等待响应时发生错误: " + e.getMessage(), echo);
+        } catch (TimeoutException e) {
+            pendingRequests.remove(echo);
+            log.error("等待响应超时: {}", echo);
+            return ActionResponse.failed(408, "等待响应超时", echo);
+        }
+    }
+
+    /**
+     * 同步等待响应，使用默认超时时间
+     *
+     * @param echo 请求的echo字段
+     * @param <T> 响应数据类型
+     * @return 响应对象
+     */
+    public <T> ActionResponse<T> waitForResponse(String echo) {
+        return waitForResponse(echo, DEFAULT_TIMEOUT_MS);
     }
 
     /**

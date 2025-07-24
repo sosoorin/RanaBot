@@ -3,6 +3,7 @@ package com.sosorin.ranabot.plugin.example;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.pinyin.PinyinUtil;
 import com.sosorin.ranabot.annotation.RanaPlugin;
+import com.sosorin.ranabot.entity.bot.IBot;
 import com.sosorin.ranabot.entity.event.message.BaseMessageEvent;
 import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
 import com.sosorin.ranabot.entity.event.message.PrivateMessageEvent;
@@ -10,10 +11,8 @@ import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.ranabot.entity.bot.IBot;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
-import com.sosorin.ranabot.util.SendEntityUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -123,11 +122,12 @@ public class ColdLaughPlugin extends AbstractPlugin {
                 }
                 // 创建回复消息
                 if (event instanceof PrivateMessageEvent) {
-                    bot.sendPrivateMessage(event.getUserId().toString(), replyMessages);
+                    Long messageId = bot.sendPrivateMessage(event.getUserId().toString(), replyMessages);
+                    return PluginResult.RETURN(String.format("回复私聊消息成功,id: %s", messageId));
                 } else if (event instanceof GroupMessageEvent) {
-                    bot.sendGroupMessage(((GroupMessageEvent) event).getGroupId().toString(), replyMessages);
+                    Long messageId = bot.sendGroupMessage(((GroupMessageEvent) event).getGroupId().toString(), replyMessages);
+                    return PluginResult.RETURN(String.format("回复群聊消息成功,id: %s", messageId));
                 }
-                return PluginResult.RETURN();
             }
         }
 
