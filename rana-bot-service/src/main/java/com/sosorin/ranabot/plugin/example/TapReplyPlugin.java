@@ -7,7 +7,7 @@ import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.bot.IBot;
+import com.sosorin.ranabot.bot.IBot;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
@@ -46,7 +46,7 @@ public class TapReplyPlugin extends AbstractPlugin {
                 Message textMessage = MessageUtil.createTextMessage(" 请我吃抹茶芭菲！");
                 List<Message> messages = List.of(atMessage, textMessage);
                 String msgStr = SendEntityUtil.buildSendGroupMessageStr(groupId.toString(), messages);
-                bot.send(msgStr);
+                bot.sendRawMessageStr(msgStr);
                 return PluginResult.RETURN("请我吃抹茶芭菲！");
             }
         }

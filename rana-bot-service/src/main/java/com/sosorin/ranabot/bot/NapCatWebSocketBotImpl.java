@@ -1,7 +1,6 @@
 package com.sosorin.ranabot.bot;
 
 import cn.hutool.core.util.StrUtil;
-import com.sosorin.bot.IBot;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.WebSocket;
@@ -24,7 +23,7 @@ public class NapCatWebSocketBotImpl implements IBot {
     }
 
     @Override
-    public boolean send(String message) {
+    public boolean sendRawMessageStr(String message) {
         log.info("发送消息：{}", message);
         if (StrUtil.isEmpty(message)) {
             log.warn("消息为空");

@@ -7,7 +7,7 @@ import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.bot.IBot;
+import com.sosorin.ranabot.bot.IBot;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
@@ -74,7 +74,7 @@ public class GroupMessagePlugin extends AbstractPlugin {
                 String eventStr = SendEntityUtil.buildSendGroupMessageStr(groupId.toString(),
                         List.of(replyMsg,
                                 MessageUtil.createTextMessage(text)));
-                bot.send(eventStr);
+                bot.sendRawMessageStr(eventStr);
             }
             return PluginResult.RETURN(text);
         }

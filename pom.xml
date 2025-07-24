@@ -2,18 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cloud.soyorin</groupId>
+    <groupId>com.sosorin</groupId>
     <artifactId>rana-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>rana-bot</name>
     <description>rana-bot</description>
+
     <modules>
         <module>rana-bot-app</module>
         <module>rana-bot-framework</module>
         <module>rana-bot-service</module>
         <module>rana-bot-dao</module>
         <module>rana-bot-model</module>
+        <module>rana-bot-plugin</module>
     </modules>
 
     <properties>

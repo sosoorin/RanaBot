@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.reader.ObjectReader;
 import com.sosorin.ranabot.enums.MessageDataType;
-import com.sosorin.ranabot.model.MessageData;
+import com.sosorin.ranabot.model.IMessageData;
 
 import java.lang.reflect.Type;
 
@@ -48,7 +48,7 @@ public class MessageDeserializer implements ObjectReader<Message> {
         }
 
         // 将data字段转换为对应的MessageData子类
-        MessageData data = null;
+        IMessageData data = null;
         switch (dataType) {
             case TEXT:
                 data = dataObject.to(TextMessageData.class);
@@ -103,6 +103,22 @@ public class MessageDeserializer implements ObjectReader<Message> {
                 break;
             case LIGHTAPP:
                 data = dataObject.to(LightappMessageData.class);
+                break;
+            // 添加新的NapCat扩展消息类型
+            case BUTTON:
+                data = dataObject.to(ButtonMessageData.class);
+                break;
+            case CARD:
+                data = dataObject.to(CardMessageData.class);
+                break;
+            case STICKER:
+                data = dataObject.to(StickerMessageData.class);
+                break;
+            case VOICE:
+                data = dataObject.to(VoiceMessageData.class);
+                break;
+            case WEATHER:
+                data = dataObject.to(WeatherMessageData.class);
                 break;
             default:
                 throw new RuntimeException("不支持的消息类型: " + type);

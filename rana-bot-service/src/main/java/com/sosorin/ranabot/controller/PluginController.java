@@ -42,7 +42,7 @@ public class PluginController {
         if (plugin == null) {
             return ResponseModel.FAIL("插件不存在");
         }
-        if (pluginManager.registerPlugin(pluginName)) {
+        if (pluginManager.registerPluginByName(pluginName)) {
             return ResponseModel.SUCCESS(plugin);
         }
         return ResponseModel.FAIL("插件已启用");

@@ -1,7 +1,7 @@
 package com.sosorin.ranabot.controller;
 
 import com.sosorin.ranabot.ResponseModel;
-import com.sosorin.bot.IBot;
+import com.sosorin.ranabot.bot.IBot;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class WebSocketMessageController {
     @PostMapping("/send/raw")
     @Operation(summary = "发送原始消息")
     public ResponseModel<?> send(@RequestBody String message) {
-        boolean sent = bot.send(message);
+        boolean sent = bot.sendRawMessageStr(message);
         return sent ? ResponseModel.SUCCESS() : ResponseModel.FAIL();
     }
 

@@ -4,7 +4,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
 import com.alibaba.fastjson2.JSON;
-import com.sosorin.bot.IBot;
+import com.sosorin.ranabot.bot.IBot;
 import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.entity.event.message.BaseMessageEvent;
 import com.sosorin.ranabot.entity.event.message.GroupMessageEvent;
@@ -143,11 +143,11 @@ public class PluginSetting extends AbstractPlugin {
         List<Message> resMessages = List.of(replyMessage, textMessage);
         switch (event.getMessageType()) {
             case "private":
-                bot.send(SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(),
+                bot.sendRawMessageStr(SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(),
                         resMessages));
                 break;
             case "group":
-                bot.send(SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(),
+                bot.sendRawMessageStr(SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(),
                         resMessages));
                 break;
         }
@@ -175,7 +175,7 @@ public class PluginSetting extends AbstractPlugin {
         Plugin plugin = pluginManager.getEnabledPlugin(pluginName);
         if (plugin != null) {
             resText = String.format("已启用插件[%s]", pluginName);
-        } else if (pluginManager.registerPlugin(pluginName)) {
+        } else if (pluginManager.registerPluginByName(pluginName)) {
             resText = String.format("已启用插件[%s]", pluginName);
         } else {
             resText = String.format("启用插件[%s]失败！", pluginName);

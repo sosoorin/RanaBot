@@ -5,6 +5,7 @@ import com.sosorin.ranabot.enums.MessageDataType;
 
 /**
  * 消息工厂类
+ * 包含创建各种消息段的工厂方法
  */
 public class MessageFactory {
 
@@ -66,5 +67,67 @@ public class MessageFactory {
         ReplyMessageData data = new ReplyMessageData();
         data.setId(id);
         return new Message(MessageDataType.REPLY.getType(), data);
+    }
+    
+    /**
+     * 创建按钮消息
+     *
+     * @param id 按钮ID
+     * @param text 按钮文本
+     * @return 消息对象
+     */
+    public static Message createButtonMessage(String id, String text) {
+        ButtonMessageData data = new ButtonMessageData();
+        data.setId(id);
+        data.setText(text);
+        return new Message(MessageDataType.BUTTON.getType(), data);
+    }
+
+    /**
+     * 创建卡片消息
+     *
+     * @param content 卡片内容
+     * @return 消息对象
+     */
+    public static Message createCardMessage(Object content) {
+        CardMessageData data = new CardMessageData();
+        data.setContent(content);
+        return new Message(MessageDataType.CARD.getType(), data);
+    }
+
+    /**
+     * 创建表情包消息
+     *
+     * @param id 表情包ID
+     * @return 消息对象
+     */
+    public static Message createStickerMessage(String id) {
+        StickerMessageData data = new StickerMessageData();
+        data.setId(id);
+        return new Message(MessageDataType.STICKER.getType(), data);
+    }
+
+    /**
+     * 创建语音消息
+     *
+     * @param url 语音URL
+     * @return 消息对象
+     */
+    public static Message createVoiceMessage(String url) {
+        VoiceMessageData data = new VoiceMessageData();
+        data.setUrl(url);
+        return new Message(MessageDataType.VOICE.getType(), data);
+    }
+
+    /**
+     * 创建天气消息
+     *
+     * @param city 城市名称
+     * @return 消息对象
+     */
+    public static Message createWeatherMessage(String city) {
+        WeatherMessageData data = new WeatherMessageData();
+        data.setCity(city);
+        return new Message(MessageDataType.WEATHER.getType(), data);
     }
 } 

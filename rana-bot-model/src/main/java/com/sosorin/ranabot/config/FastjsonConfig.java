@@ -28,6 +28,6 @@ public class FastjsonConfig {
         JSON.register(EventBody.class, new EventBodyDeserializer());
 
         // 设置自动类型处理
-        System.setProperty("fastjson2.parser.autoTypeAccept", "com.soyorin.ranabot.entity.");
+        System.setProperty("fastjson2.parser.autoTypeAccept", "com.sosorin.ranabot.entity.");
     }
 } 

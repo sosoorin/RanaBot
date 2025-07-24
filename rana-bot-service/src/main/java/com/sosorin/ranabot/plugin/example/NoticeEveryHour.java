@@ -5,7 +5,7 @@ import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.bot.IBot;
+import com.sosorin.ranabot.bot.IBot;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +81,7 @@ public class NoticeEveryHour extends AbstractPlugin {
             GROUP_ID_SET.forEach(groupId -> {
                 String eventStr = SendEntityUtil.buildSendGroupMessageStr(groupId,
                         List.of(MessageUtil.createTextMessage(text)));
-                bot.send(eventStr);
+                bot.sendRawMessageStr(eventStr);
             });
         }
     }

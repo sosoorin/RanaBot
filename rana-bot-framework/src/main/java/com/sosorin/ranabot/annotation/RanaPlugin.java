@@ -1,7 +1,5 @@
 package com.sosorin.ranabot.annotation;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
 

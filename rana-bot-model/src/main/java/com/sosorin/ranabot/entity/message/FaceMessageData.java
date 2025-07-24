@@ -2,14 +2,14 @@ package com.sosorin.ranabot.entity.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sosorin.ranabot.enums.MessageDataType;
-import com.sosorin.ranabot.model.MessageData;
+import com.sosorin.ranabot.model.IMessageData;
 import lombok.Data;
 
 /**
  * QQ表情消息数据
  */
 @Data
-public class FaceMessageData implements MessageData {
+public class FaceMessageData implements IMessageData {
     private String id;
 
     @JsonIgnore

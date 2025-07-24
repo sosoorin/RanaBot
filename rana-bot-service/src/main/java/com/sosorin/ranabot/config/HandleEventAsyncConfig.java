@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2025/6/27  12:45
  */
 @Configuration
-public class HandleEventAsyncConfig{
+public class HandleEventAsyncConfig {
 
     private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
 

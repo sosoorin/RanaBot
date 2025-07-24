@@ -3,7 +3,7 @@ package com.sosorin.ranabot.entity.message;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sosorin.ranabot.enums.MessageDataType;
-import com.sosorin.ranabot.model.MessageData;
+import com.sosorin.ranabot.model.IMessageData;
 import lombok.Data;
 
 /**
@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MusicMessageData implements MessageData {
+public class MusicMessageData implements IMessageData {
     private String type; // qq, 163, kugou, migu, kuwo 或 custom
     private String id; // 音乐ID（非自定义音源）
     private String url; // 点击后跳转URL（自定义音源）

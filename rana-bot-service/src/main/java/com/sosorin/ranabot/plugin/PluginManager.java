@@ -3,7 +3,7 @@ package com.sosorin.ranabot.plugin;
 import cn.hutool.extra.spring.SpringUtil;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
-import com.sosorin.bot.IBot;
+import com.sosorin.ranabot.bot.IBot;
 import com.sun.nio.sctp.HandlerResult;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +80,7 @@ public class PluginManager {
         }
     }
 
-    public boolean registerPlugin(String pluginName) {
+    public boolean registerPluginByName(String pluginName) {
         try {
             Object bean = SpringUtil.getBean(pluginName);
             if (bean instanceof Plugin) {

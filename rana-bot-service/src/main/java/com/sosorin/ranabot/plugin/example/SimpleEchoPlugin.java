@@ -9,7 +9,7 @@ import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.bot.IBot;
+import com.sosorin.ranabot.bot.IBot;
 import com.sosorin.ranabot.util.EventParseUtil;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
@@ -107,7 +107,7 @@ public class SimpleEchoPlugin extends AbstractPlugin {
                     bodyStr = SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(), messages);
                 }
                 log.info("发送消息: {}", bodyStr);
-                bot.send(bodyStr);
+                bot.sendRawMessageStr(bodyStr);
                 return PluginResult.RETURN("Echo: " + messages);
             }
         }

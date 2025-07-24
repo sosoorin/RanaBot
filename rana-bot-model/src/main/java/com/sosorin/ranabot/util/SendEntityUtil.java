@@ -1,6 +1,7 @@
 package com.sosorin.ranabot.util;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.sosorin.ranabot.entity.message.Message;
 import com.sosorin.ranabot.entity.send.WebSocketEntity;
 
@@ -25,6 +26,18 @@ public class SendEntityUtil {
         WebSocketEntity msg = WebSocketEntity.builder().action("send_group_msg").params(params).build();
         return JSON.toJSONString(msg);
     }
+
+    public static String buildSendGroupMessageStr(String groupId, Message message) {
+        return buildSendGroupMessageStr(groupId, List.of(message));
+    }
+
+    public static String buildSendGroupMessageStr(String groupId, JSONArray messages) {
+        Map<String, Object> params = Map.of("group_id", groupId, "message", messages);
+        WebSocketEntity msg = WebSocketEntity.builder().action("send_group_msg").params(params).build();
+        return JSON.toJSONString(msg);
+    }
+
+
 
     /**
      * 构建发送群消息的JSON字符串

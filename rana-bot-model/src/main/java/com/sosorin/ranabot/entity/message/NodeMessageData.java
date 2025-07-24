@@ -3,7 +3,7 @@ package com.sosorin.ranabot.entity.message;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sosorin.ranabot.enums.MessageDataType;
-import com.sosorin.ranabot.model.MessageData;
+import com.sosorin.ranabot.model.IMessageData;
 import lombok.Data;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NodeMessageData implements MessageData {
+public class NodeMessageData implements IMessageData {
     private String id;
     private List<Message> content;
     private String userId;

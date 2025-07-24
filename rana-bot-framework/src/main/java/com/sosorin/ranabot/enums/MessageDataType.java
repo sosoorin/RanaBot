@@ -2,6 +2,7 @@ package com.sosorin.ranabot.enums;
 
 /**
  * 消息类型枚举
+ * 包含OneBot 12和NapCat支持的所有消息段类型
  */
 public enum MessageDataType {
     TEXT("text"),
@@ -25,7 +26,13 @@ public enum MessageDataType {
     MFACE("mface"),
     FILE("file"),
     MARKDOWN("markdown"),
-    LIGHTAPP("lightapp");
+    LIGHTAPP("lightapp"),
+    // NapCat扩展消息类型
+    BUTTON("button"),
+    CARD("card"),
+    STICKER("sticker"),
+    VOICE("voice"),
+    WEATHER("weather");
 
     private final String type;
 
