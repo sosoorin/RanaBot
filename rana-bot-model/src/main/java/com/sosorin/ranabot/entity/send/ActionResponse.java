@@ -16,6 +16,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ActionResponse<T> {
+
+    public static final String OK_CODE = "ok";
+
+    public static final String FAILED_CODE = "failed";
+
     /**
      * 状态，表示API是否调用成功
      * ok 表示调用成功
@@ -52,7 +57,7 @@ public class ActionResponse<T> {
      */
     public static <T> ActionResponse<T> ok(T data, String echo) {
         return ActionResponse.<T>builder()
-                .status("ok")
+                .status(OK_CODE)
                 .data(data)
                 .echo(echo)
                 .build();
@@ -68,7 +73,7 @@ public class ActionResponse<T> {
      */
     public static <T> ActionResponse<T> failed(Integer retcode, String message, String echo) {
         return ActionResponse.<T>builder()
-                .status("failed")
+                .status(FAILED_CODE)
                 .retcode(retcode)
                 .message(message)
                 .echo(echo)

@@ -4,12 +4,24 @@ server:
     context-path: /rana-bot
   tomcat:
     uri-encoding: UTF-8
-
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/rana-bot?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: KB2eVJ*wjPNToq7e
+    driver-class-name: com.mysql.cj.jdbc.Driver
 nap-cat:
   ws:
-    url: ws://localhost:3001
-    token: default_token
+    url: ws://10.0.0.13:9001
+    token: wzt3bme6FYB-vhe6aze
 bot:
   enabled-plugins:
     - "groupMessagePlugin"
     - "抹茶芭菲复读机"
+    - "TapReply"
+    - "整点报时"
+    - "插件设置"
+    - "谐音梗生成器"
+  plugin-dir: "/root/rana-bot/plugins"
+plugin-config:
+  super-user-id: 920009579

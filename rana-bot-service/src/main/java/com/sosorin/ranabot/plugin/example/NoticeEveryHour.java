@@ -5,7 +5,7 @@ import com.sosorin.ranabot.annotation.RanaPlugin;
 import com.sosorin.ranabot.model.EventBody;
 import com.sosorin.ranabot.model.PluginResult;
 import com.sosorin.ranabot.plugin.AbstractPlugin;
-import com.sosorin.ranabot.bot.IBot;
+import com.sosorin.ranabot.entity.bot.IBot;
 import com.sosorin.ranabot.util.MessageUtil;
 import com.sosorin.ranabot.util.SendEntityUtil;
 import org.springframework.beans.factory.annotation.Autowired;

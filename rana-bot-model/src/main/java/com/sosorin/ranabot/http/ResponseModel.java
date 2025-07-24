@@ -1,4 +1,4 @@
-package com.sosorin.ranabot;
+package com.sosorin.ranabot.http;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;

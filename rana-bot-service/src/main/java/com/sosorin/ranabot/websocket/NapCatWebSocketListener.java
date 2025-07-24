@@ -26,13 +26,13 @@ import java.io.IOException;
 public class NapCatWebSocketListener extends WebSocketListener {
 
     private final PluginManager pluginManager;
-
+    private final WebSocketResponseHandler responseHandler;
 
     @Autowired
-    public NapCatWebSocketListener(PluginManager pluginManager) {
+    public NapCatWebSocketListener(PluginManager pluginManager, WebSocketResponseHandler responseHandler) {
         this.pluginManager = pluginManager;
+        this.responseHandler = responseHandler;
     }
-
 
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
@@ -50,6 +50,13 @@ public class NapCatWebSocketListener extends WebSocketListener {
         super.onMessage(webSocket, text);
         log.info("收到消息: {}", text);
 
+        // 首先尝试处理API响应
+        if (responseHandler.handleResponse(text)) {
+            // 已处理为API响应，不再作为事件处理
+            return;
+        }
+        
+        // 如果不是API响应，则作为事件处理
         EventBody eventBody = EventParseUtil.parseEvent(text);
         if (eventBody != null) {
             log.info("解析事件: {}", eventBody);

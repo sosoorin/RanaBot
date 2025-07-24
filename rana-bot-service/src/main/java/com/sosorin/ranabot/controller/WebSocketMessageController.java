@@ -1,14 +1,16 @@
 package com.sosorin.ranabot.controller;
 
-import com.sosorin.ranabot.ResponseModel;
-import com.sosorin.ranabot.bot.IBot;
+import com.sosorin.ranabot.entity.bot.GroupInfo;
+import com.sosorin.ranabot.entity.send.ActionResponse;
+import com.sosorin.ranabot.http.ResponseModel;
+import com.sosorin.ranabot.entity.bot.IBot;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author rana-bot
@@ -27,6 +29,14 @@ public class WebSocketMessageController {
     public ResponseModel<?> send(@RequestBody String message) {
         boolean sent = bot.sendRawMessageStr(message);
         return sent ? ResponseModel.SUCCESS() : ResponseModel.FAIL();
+    }
+
+    @GetMapping("/groupList")
+    @Operation(summary = "获取群列表")
+    public ResponseModel<?> getGroupList() {
+        CompletableFuture<ActionResponse<List<GroupInfo>>> future = bot.getGroupList();
+        ActionResponse<List<GroupInfo>> response = future.join();
+        return response.getStatus().equals(ActionResponse.OK_CODE) ? ResponseModel.SUCCESS(response.getData()) : ResponseModel.FAIL(response.getMessage());
     }
 
 }

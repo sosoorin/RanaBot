@@ -1,6 +1,6 @@
 package com.sosorin.ranabot.controller;
 
-import com.sosorin.ranabot.ResponseModel;
+import com.sosorin.ranabot.http.ResponseModel;
 import com.sosorin.ranabot.plugin.Plugin;
 import com.sosorin.ranabot.plugin.PluginManager;
 import io.swagger.v3.oas.annotations.Operation;
