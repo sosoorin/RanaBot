@@ -143,12 +143,10 @@ public class PluginSetting extends AbstractPlugin {
         List<Message> resMessages = List.of(replyMessage, textMessage);
         switch (event.getMessageType()) {
             case "private":
-                bot.sendRawMessageStr(SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(),
-                        resMessages));
+                bot.sendPrivateMessage(event.getUserId().toString(), resMessages);
                 break;
             case "group":
-                bot.sendRawMessageStr(SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(),
-                        resMessages));
+                bot.sendGroupMessage(((GroupMessageEvent) event).getGroupId().toString(), resMessages);
                 break;
         }
     }

@@ -71,15 +71,12 @@ public class GroupMessagePlugin extends AbstractPlugin {
                         "3. 帮助（帮助/help）";
             }
             if (StrUtil.isNotBlank(text)) {
-                String eventStr = SendEntityUtil.buildSendGroupMessageStr(groupId.toString(),
-                        List.of(replyMsg,
-                                MessageUtil.createTextMessage(text)));
-                bot.sendRawMessageStr(eventStr);
+                bot.sendGroupMessage(groupId.toString(), replyMsg, MessageUtil.createTextMessage(text));
             }
             return PluginResult.RETURN(text);
         }
 
-        // 如果不满足任何条件，则返回null表示不处理
+        // 如果不满足任何条件，则返回continue
         return PluginResult.CONTINUE();
     }
 

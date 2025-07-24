@@ -122,14 +122,11 @@ public class ColdLaughPlugin extends AbstractPlugin {
                     throw new RuntimeException(e);
                 }
                 // 创建回复消息
-                String bodyStr = "";
                 if (event instanceof PrivateMessageEvent) {
-                    bodyStr = SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(), replyMessages);
+                    bot.sendPrivateMessage(event.getUserId().toString(), replyMessages);
                 } else if (event instanceof GroupMessageEvent) {
-                    bodyStr = SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(), replyMessages);
+                    bot.sendGroupMessage(((GroupMessageEvent) event).getGroupId().toString(), replyMessages);
                 }
-                log.info("发送消息: {}", bodyStr);
-                bot.sendRawMessageStr(bodyStr);
                 return PluginResult.RETURN();
             }
         }

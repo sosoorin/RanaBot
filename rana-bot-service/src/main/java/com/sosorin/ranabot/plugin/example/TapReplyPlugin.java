@@ -45,9 +45,9 @@ public class TapReplyPlugin extends AbstractPlugin {
                 Message atMessage = MessageUtil.createAtMessage(event.getUserId().toString());
                 Message textMessage = MessageUtil.createTextMessage(" 请我吃抹茶芭菲！");
                 List<Message> messages = List.of(atMessage, textMessage);
-                String msgStr = SendEntityUtil.buildSendGroupMessageStr(groupId.toString(), messages);
-                bot.sendRawMessageStr(msgStr);
-                return PluginResult.RETURN("请我吃抹茶芭菲！");
+                if (bot.sendGroupMessage(groupId.toString(), messages)) {
+                    return PluginResult.RETURN("请我吃抹茶芭菲！");
+                }
             }
         }
         return PluginResult.CONTINUE();

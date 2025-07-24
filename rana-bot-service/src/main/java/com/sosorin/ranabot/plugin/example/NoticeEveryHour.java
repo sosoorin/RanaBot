@@ -79,9 +79,7 @@ public class NoticeEveryHour extends AbstractPlugin {
             String text = "现在时间是：" + now.format(DATE_TIME_FORMATTER);
             MessageUtil.createTextMessage(text);
             GROUP_ID_SET.forEach(groupId -> {
-                String eventStr = SendEntityUtil.buildSendGroupMessageStr(groupId,
-                        List.of(MessageUtil.createTextMessage(text)));
-                bot.sendRawMessageStr(eventStr);
+                bot.sendGroupMessage(groupId, MessageUtil.createTextMessage(text));
             });
         }
     }

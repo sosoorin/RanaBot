@@ -32,6 +32,10 @@ public interface IBot {
      */
     boolean sendPrivateMessage(String userId, Message... messages);
 
+    default boolean sendPrivateMessage(String userId, List<Message> messages) {
+        return sendPrivateMessage(userId, messages.toArray(new Message[]{}));
+    }
+
     /**
      * 发送群消息
      *
@@ -40,6 +44,10 @@ public interface IBot {
      * @return 发送结果
      */
     boolean sendGroupMessage(String groupId, Message... messages);
+
+    default boolean sendGroupMessage(String groupId, List<Message> messages) {
+        return sendGroupMessage(groupId, messages.toArray(new Message[]{}));
+    }
 
     /**
      * 获取QQ群列表信息

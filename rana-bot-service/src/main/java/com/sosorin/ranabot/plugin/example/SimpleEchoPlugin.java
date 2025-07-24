@@ -100,14 +100,11 @@ public class SimpleEchoPlugin extends AbstractPlugin {
                     throw new RuntimeException(e);
                 }
                 // 创建回复消息
-                String bodyStr = "";
                 if (event instanceof PrivateMessageEvent) {
-                    bodyStr = SendEntityUtil.buildSendPrivateMessageStr(event.getUserId().toString(), messages);
+                    bot.sendPrivateMessage(event.getUserId().toString(), messages);
                 } else if (event instanceof GroupMessageEvent) {
-                    bodyStr = SendEntityUtil.buildSendGroupMessageStr(((GroupMessageEvent) event).getGroupId().toString(), messages);
+                    bot.sendGroupMessage(((GroupMessageEvent) event).getGroupId().toString(), messages);
                 }
-                log.info("发送消息: {}", bodyStr);
-                bot.sendRawMessageStr(bodyStr);
                 return PluginResult.RETURN("Echo: " + messages);
             }
         }
