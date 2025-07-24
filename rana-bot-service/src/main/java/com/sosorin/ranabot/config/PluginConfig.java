@@ -24,7 +24,6 @@ import java.util.List;
  */
 @Slf4j
 @Configuration
-@ConfigurationProperties(prefix = "bot")
 public class PluginConfig {
 
     private final PluginManager pluginManager;
@@ -34,14 +33,10 @@ public class PluginConfig {
         this.pluginManager = pluginManager;
     }
 
-    @Setter
-    private List<String> enabledPlugins;
-
-    @Setter
-    private String pluginDir = "plugins";
-
     @Autowired
     private DynamicPluginLoader dynamicPluginLoader;
+    @Autowired
+    private PluginConfigProperties pluginConfigProperties;
 
     /**
      * 初始化插件
@@ -51,6 +46,7 @@ public class PluginConfig {
     public void init() {
         log.info("开始注册插件...");
 
+        String pluginDir = pluginConfigProperties.getPluginDir();
         String pathStr = FileUtil.getAbsolutePath(pluginDir);
         log.info("插件目录: {}", pathStr);
 
@@ -71,6 +67,7 @@ public class PluginConfig {
         });
 
         // 注册所有插件
+        List<String> enabledPlugins = pluginConfigProperties.getEnabledPlugins();
         enabledPlugins.forEach(pluginManager::registerPluginByName);
 
         log.info("插件注册完成，共注册 {} 个插件", pluginManager.getAllEnabledPlugins().size());
